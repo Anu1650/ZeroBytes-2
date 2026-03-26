@@ -232,7 +232,7 @@ app.get('/api/seed', async (req, res) => {
 });
 
 // Serve frontend for all non-API routes
-app.get('*', (req, res) => {
+app.use((req, res, next) => {
     if (!req.path.startsWith('/api')) {
         res.sendFile(path.join(__dirname, '../client/index.html'));
     } else {
