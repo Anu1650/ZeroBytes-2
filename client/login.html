@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccessLearn - Student & Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="main-header">
+            <div class="logo-container">
+                <i class="fa-solid fa-book-open logo-icon"></i>
+                <div class="logo-text">
+                    <h1>AccessLearn</h1>
+                    <p class="tagline">EMPOWERING EVERY LEARNER</p>
+                </div>
+            </div>
+            <p class="header-subtitle">India's inclusive EdTech ecosystem designed for students with diverse learning
+                needs.</p>
+        </header>
+
+        <main class="login-container">
+            <!-- Floating Accessibility Menu -->
+            <div class="accessibility-menu">
+                <button class="a11y-btn" title="Contrast">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <span>CONTRAST</span>
+                </button>
+                <button class="a11y-btn" title="Screen Reader">
+                    <i class="fa-solid fa-head-side-listen"></i>
+                    <span>READER</span>
+                </button>
+                <button class="a11y-btn" title="Zoom">
+                    <i class="fa-solid fa-text-height"></i>
+                    <span>ZOOM</span>
+                </button>
+                <button class="a11y-btn" title="Font">
+                    <i class="fa-solid fa-font"></i>
+                    <i class="fa-solid fa-arrows-up-down font-arrows"></i>
+                    <span>FONT</span>
+                </button>
+            </div>
+
+            <!-- Student Card -->
+            <div class="card student-card">
+                <div class="card-header">
+                    <div class="title-with-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <h2>Student Entry</h2>
+                    </div>
+                    <div class="register-link">
+                        <span class="new-here">NEW HERE?</span> <a href="student-signup.html">Register / Sign Up</a>
+                    </div>
+                </div>
+
+                <p class="greeting">Namaste! Ready to start your learning journey?</p>
+
+                <form class="login-form">
+                    <div class="input-group">
+                        <label for="email-id">
+                            <i class="fa-regular fa-envelope"></i> Email ID
+                        </label>
+                        <input type="email" id="email-id" placeholder="student@example.com">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">
+                            <i class="fa-solid fa-asterisk"></i> Password
+                        </label>
+                        <input type="password" id="password" placeholder="••••••••">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Log In to Dashboard</button>
+
+                    <div class="divider">
+                        <span>OR LOGIN WITH</span>
+                    </div>
+
+                    <button type="button" class="btn btn-voice">
+                        <i class="fa-solid fa-microphone"></i> Voice Command Login
+                    </button>
+                </form>
+
+                <div class="card-footer-actions">
+                    <a href="forgot-password.html" class="forgot-password">
+                        <i class="fa-solid fa-volume-high"></i> Forgot Password? (Audio)
+                    </a>
+
+                    <button class="lang-switch">
+                        <i class="fa-solid fa-globe"></i> हिन्दी / Language
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Card -->
+            <div class="card admin-card">
+                <div class="admin-header-top">
+                    <span class="badge badge-secure"><i class="fa-solid fa-shield-halved"></i> GOVT. CERTIFIED
+                        SECURE</span>
+                    <a href="admin-signup.html" class="admin-register">New Officer? Register</a>
+                </div>
+
+                <div class="title-with-icon admin-title">
+                    <i class="fa-solid fa-shield-cat"></i>
+                    <h2>Admin Portal</h2>
+                </div>
+                <p class="admin-subtitle">Authorized access for Educators, Nodal<br>Officers, and Government Partners.
+                </p>
+
+                <form class="admin-form">
+                    <div class="input-group admin-input">
+                        <label for="inst-id">INSTITUTIONAL ID</label>
+                        <input type="text" id="inst-id" placeholder="official@nic.in">
+                    </div>
+
+                    <div class="input-group admin-input relative" style="position: relative;">
+                        <label for="sec-key">SECURITY KEY</label>
+                        <input type="password" id="sec-key" placeholder="••••••••">
+                        <div class="listening-tooltip">
+                            <span class="red-dot"></span> "AI Sahayak is listening..."
+                        </div>
+                    </div>
+
+                    <div class="mfa-box">
+                        <div class="mfa-icon"><i class="fa-solid fa-check-shield"></i></div>
+                        <div class="mfa-content">
+                            <strong>MFA Required</strong>
+                            <p>Biometric or OTP verification will be required for official data access.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-white">Verify & Enter</button>
+                </form>
+
+                <button class="floating-mic-btn">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+
+                <div class="admin-footer">
+                    <span class="footer-label">OFFICIAL COLLABORATION</span>
+                    <a href="#" class="gov-partner-link">
+                        <div class="gov-icon"><i class="fa-solid fa-building-columns"></i></div>
+                        <span>Government Partner<br>Portal</span>
+                        <i class="fa-solid fa-chevron-right arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <div class="help-section">
+            <div class="help-box">
+                <strong>Facing Trouble?</strong>
+                <p>Just say <span class="highlight">"AI Sahayak, help me log in"</span> or call our accessible helpline:
+                    <strong>1800-419-HELP</strong>
+                </p>
+            </div>
+        </div>
+
+        <footer class="main-footer">
+            <div class="footer-links">
+                <a href="#">PRIVACY & SAFETY</a>
+                <a href="#">ACCESSIBILITY PLEDGE</a>
+                <a href="#">GRIEVANCE REDRESSAL</a>
+            </div>
+            <p class="digital-india">DIGITAL INDIA 2024</p>
+            <p class="copyright">Copyright © 2024 AccessLearn. This portal is optimized for screen readers and WCAG 2.1
+                compliance.</p>
+        </footer>
+    </div>
+    <script src="login.js"></script>
+</body>
+
+</html>

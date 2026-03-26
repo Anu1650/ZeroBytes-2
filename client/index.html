@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AccessLearn</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="auth.js"></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- PAGE 1: PREFERENCES -->
+        <div id="page-preferences" class="page active">
+            <!-- Floating Accessibility Widget -->
+            <div class="access-widget">
+                <button class="active" title="Text Size">tT</button>
+                <button title="Contrast">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+                        <path d="M12 2a10 10 0 0 0 0 20z" fill="currentColor" />
+                    </svg>
+                </button>
+                <button title="Screen Reader">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                        <path
+                            d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                    </svg>
+                </button>
+            </div>
+
+            <header>
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                    AccessLearn
+                </div>
+                <div style="margin-left:auto; display:flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size:0.9rem;"
+                        onclick="window.location.href='login.html'">Log In</button>
+                    <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size:0.9rem;"
+                        onclick="switchPage('page-admin')">Admin View</button>
+                </div>
+            </header>
+
+            <main>
+                <div class="intro">
+                    <h1>How can we help you learn better?</h1>
+                    <p>Customize your learning experience. You can change these settings anytime.</p>
+                </div>
+
+                <div class="main-content">
+                    <div class="preferences-grid">
+                        <div class="pref-card active" onclick="toggleCard(this)">
+                            <div class="icon">tT</div>
+                            <h3>Larger Text</h3>
+                            <p>Increase all words larger and easier to see every page.</p>
+                        </div>
+
+                        <div class="pref-card" onclick="toggleCard(this)">
+                            <div class="icon">🎧</div>
+                            <h3>Audio Lessons</h3>
+                            <p>Have your textbooks read aloud with natural sounding voices.</p>
+                        </div>
+
+                        <div class="pref-card" onclick="toggleCard(this)">
+                            <div class="icon">💡</div>
+                            <h3>Simple Mode</h3>
+                            <p>Breaks down complex topics into easy-to-follow steps.</p>
+                        </div>
+
+                        <div class="pref-card" onclick="toggleCard(this)">
+                            <div class="icon">👁️‍🗨️</div>
+                            <h3>Focus Mode</h3>
+                            <p>Hides distractions like ads and extra buttons to help you focus.</p>
+                        </div>
+                    </div>
+
+                    <div class="preview-section">
+                        <h3 class="preview-title">DASHBOARD PREVIEW</h3>
+                        <div class="preview-mockup">
+                            <div class="mock-line"></div>
+                            <div class="mock-line long"></div>
+                            <div style="display: flex; gap: 8px; margin-top: 1rem;">
+                                <div class="mock-line short green"></div>
+                                <div class="mock-line short green"></div>
+                            </div>
+                            <div class="mock-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="preview-footer">Your dashboard updates instantly as you select choices.</p>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="window.location.href='student-signup.html'">Save My Preferences</button>
+                    <div class="skip-wrapper">
+                        <button class="btn btn-secondary" onclick="window.location.href='admin-signup.html'">Skip for
+                            Now</button>
+                        <button class="mic-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                <line x1="12" y1="19" x2="12" y2="22" />
+                            </svg>
+                            <span class="tooltip">Speak "Skip" if you prefer</span>
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <div class="footer" style="padding-top: 2rem;">
+                <div class="footer-brand">Powered by ZenByte Studios</div>
+                <div class="footer-desc">Designed for Access, inclusivity, and an AI-driven future.<br>Support
+                    AccessLearn Project.</div>
+                <div class="footer-links">
+                    <a href="#">PRIVACY & TERMS</a>
+                    <a href="#">ACCESSIBILITY POLICY</a>
+                    <a href="#">GRIEVANCE REDRESSAL</a>
+                </div>
+                <div class="footer-copy">Copyright © 2024 AccessLearn Empower Partnership. All rights reserved.</div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: STUDENT SIGNUP -->
+        <div id="page-student" class="page">
+            <header>
+                <div class="logo" onclick="switchPage('page-preferences')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                    AccessLearn
+                </div>
+            </header>
+
+            <div class="signup-page">
+                <div class="signup-box">
+                    <h2 class="signup-title">STUDENT SIGNUP</h2>
+
+                    <h4 class="support-needs-title">Select your primary support need</h4>
+                    <div class="needs-grid">
+                        <div class="need-pill active" onclick="this.classList.toggle('active')">👁️ Visual</div>
+                        <div class="need-pill" onclick="this.classList.toggle('active')">🧠 Learning / ADHD</div>
+                        <div class="need-pill" onclick="this.classList.toggle('active')">👂 Hearing</div>
+                        <div class="need-pill" onclick="this.classList.toggle('active')">♿ Physical</div>
+                        <div class="need-pill" onclick="this.classList.toggle('active')">➕ Something else</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" placeholder="Enter Full Name">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Student ID / Aadhaar</label>
+                        <input type="text" placeholder="xxxx - xxxx - xxxx">
+                    </div>
+
+                    <div class="signup-actions">
+                        <button class="btn btn-primary btn-full">Complete Registration</button>
+                        <button class="btn btn-outline-green btn-full"
+                            style="display:flex; justify-content:center; gap:10px;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                <line x1="12" y1="19" x2="12" y2="22" />
+                            </svg>
+                            Register with Voice
+                        </button>
+                    </div>
+
+                    <div style="margin-top:2rem; font-size:0.8rem; color:var(--text-muted)">
+                        Powered by ZenByte Studios<br>
+                        Designed for Access, inclusivity, and an AI-driven future. Support AccessLearn Project
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: ADMIN/TEACHER SIGNUP -->
+        <div id="page-admin" class="page">
+            <div class="admin-page-bg">
+                <div class="admin-box">
+                    <div class="logo" style="margin-bottom: 2rem; justify-content:center; cursor:pointer;"
+                        onclick="switchPage('page-preferences')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                        AccessLearn
+                    </div>
+
+                    <h2 class="signup-title" style="margin-bottom: 0.5rem">Admin/Teacher Signup</h2>
+                    <p style="text-align:center; color:#8AA4BC; font-size:0.9rem; margin-bottom: 2rem;">Official
+                        representative for educational institutions and non-profit associations</p>
+
+                    <div class="input-group admin-input-group">
+                        <label>School or University Name</label>
+                        <input type="text" placeholder="Type here...">
+                    </div>
+
+                    <div class="input-group admin-input-group">
+                        <label>Email ID</label>
+                        <input type="email" placeholder="example@org.edu">
+                    </div>
+
+                    <div class="input-group admin-input-group">
+                        <label>User ID</label>
+                        <div class="mic-input-wrapper">
+                            <input type="text" placeholder="Type or use voice">
+                            <div class="mic-input-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div
+                            style="font-size:0.8rem; margin-top:10px; color:#8AA4BC; display:flex; align-items:center; gap:5px;">
+                            <span
+                                style="display:inline-block; width:8px; height:8px; background:red; border-radius:50%;"></span>
+                            "Hi AccessLearn, how do I help you register?"
+                        </div>
+                    </div>
+
+                    <button class="btn admin-btn">Request Access</button>
+
+                    <div style="text-align:center; margin-top:2rem; font-size:0.9rem; color:#8AA4BC;">
+                        Have an account already? <a href="login.html" style="color:#3B7E62">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleCard(element) {
+            element.classList.toggle('active');
+        }
+
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Show requested page
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>

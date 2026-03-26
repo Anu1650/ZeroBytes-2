@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- ================= META INFORMATION ================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Signup - AccessLearn</title>
+
+    <!-- ================= GOOGLE FONT ================= -->
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- ================= CSS STYLING ================= -->
+    <style>
+        /* ===== Global Reset & Font ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        /* ===== Body Styling ===== */
+        body {
+            background-color: #fdfaf2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+            color: #1c2321;
+        }
+
+        /* ===== Main Container ===== */
+        .container {
+            width: 100%;
+            max-width: 550px;
+        }
+
+        /* ===== Page Header Section ===== */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ===== Logo Section ===== */
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #124A35;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .logo-main svg {
+            width: 28px;
+            height: 28px;
+            fill: #124A35;
+        }
+
+        .logo-sub {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #5e6962;
+            margin-top: 2px;
+        }
+
+        /* ===== Page Description ===== */
+        .page-header p {
+            color: #5e6962;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .page-header span.highlight {
+            color: #124A35;
+            font-weight: 600;
+        }
+
+        /* ===== Signup Card ===== */
+        .signup-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+
+        /* ===== Card Header ===== */
+        .card-header {
+            position: relative;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ===== Voice Button ===== */
+        .card-voice-btn {
+            position: absolute;
+            left: -15px;
+            top: -10px;
+            width: 45px;
+            height: 45px;
+            background: #e9f4ee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #124A35;
+            box-shadow: 0 4px 10px rgba(18, 74, 53, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .card-voice-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* ===== Card Title ===== */
+        .card-header h2 {
+            color: #124A35;
+            font-size: 1.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .card-header p {
+            color: #5e6962;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== Disability Selection Pills ===== */
+        .needs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .need-pill {
+            padding: 8px 16px;
+            border: 1.5px solid #d3e0d8;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .need-pill.active {
+            border-color: #124A35;
+            background-color: #e9f4ee;
+            color: #124A35;
+        }
+
+        /* ===== Form Input Section ===== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #d3e0d8;
+            border-radius: 10px;
+            background: #fafcfa;
+        }
+
+        .form-group input:focus {
+            border-color: #124A35;
+            background: white;
+        }
+
+        /* ===== Hint Text ===== */
+        .form-hint {
+            font-size: 0.75rem;
+            color: #5e6962;
+            text-align: right;
+        }
+
+        /* ===== Buttons ===== */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            background: #124A35;
+            color: white;
+            border: none;
+        }
+
+        /* Outline Button */
+        .btn-outline {
+            background: white;
+            color: #124A35;
+            border: 2px solid #124A35;
+        }
+
+        /* ===== Footer Login Link ===== */
+        .footer-link {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            color: #5e6962;
+        }
+
+        .footer-link a {
+            color: #124A35;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* ===== Footer Section ===== */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.8rem;
+        }
+
+        .footer-brand {
+            font-weight: 700;
+            color: #124A35;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <div class="container">
+
+        <!-- ================= HEADER SECTION ================= -->
+        <div class="page-header">
+
+            <!-- Logo -->
+            <div class="logo-box">
+                <div class="logo-main">
+                    <!-- Logo Icon -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                    AccessLearn
+                </div>
+
+                <!-- Tagline -->
+                <div class="logo-sub">EMPOWERING EVERY LEARNER</div>
+            </div>
+
+            <!-- Description -->
+            <p>India's inclusive EdTech ecosystem for students with disabilities.</p>
+
+        </div>
+
+        <!-- ================= SIGNUP CARD ================= -->
+        <div class="signup-card">
+
+            <!-- Card Header -->
+            <div class="card-header">
+
+                <!-- Voice Support Button -->
+                <div class="card-voice-btn" title="Voice Support">
+                    🎤
+                </div>
+
+                <h2>Student Signup</h2>
+                <p>Select your primary support need</p>
+
+            </div>
+
+            <!-- ================= DISABILITY OPTIONS ================= -->
+            <div class="needs-grid">
+                <div class="need-pill active" onclick="togglePill(this)">👁️ Visual</div>
+                <div class="need-pill" onclick="togglePill(this)">🧠 Learning / ADHD</div>
+                <div class="need-pill" onclick="togglePill(this)">👂 Hearing</div>
+                <div class="need-pill" onclick="togglePill(this)">♿ Physical</div>
+                <div class="need-pill" onclick="togglePill(this)">🦽 Locomotion Disability</div>
+                <div class="need-pill" onclick="togglePill(this)">➕ Something else</div>
+            </div>
+
+            <!-- ================= FORM INPUTS ================= -->
+
+            <!-- Full Name -->
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="studentName" placeholder="Enter your full name">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="studentEmail" placeholder="student@example.com">
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="studentPassword" placeholder="Enter Password">
+            </div>
+
+            <!-- ================= BUTTON SECTION ================= -->
+            <button class="btn btn-primary" id="studentSubmitBtn">Complete Registration</button>
+
+            <button class="btn btn-outline">
+                🎤 Register with Voice
+            </button>
+
+            <!-- Login Link -->
+            <div class="footer-link">
+                Have an account already? <a href="login.html">Log In to Dashboard</a>
+            </div>
+
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+        <div class="footer">
+            <div class="footer-brand">Powered by ZenByte Studios</div>
+            <div>Designed for Access and inclusivity</div>
+        </div>
+
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script src="auth.js"></script>
+    <script>
+
+        // Toggle active state for disability selection
+        function togglePill(element) {
+            document.querySelectorAll('.need-pill').forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+    </script>
+
+</body>
+
+</html>

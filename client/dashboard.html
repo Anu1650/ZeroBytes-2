@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AccessLearn — Student Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Lexend+Deca:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — AccessLearn brand (#124A35)
+       ============================================================ */
+    :root {
+      --green:       #124A35;
+      --green-mid:   #1e6b4d;
+      --green-light: #22c55e;
+      --green-muted: #e9f4ee;
+      --green-glow:  rgba(18,74,53,0.15);
+      --yellow:      #f59e0b;
+      --yellow-muted:#fef9c3;
+      --bg:          #fafdf8;
+      --surface:     #ffffff;
+      --surface2:    #f4f7f4;
+      --sidebar-bg:  #ffffff;
+      --border:      #d3e0d8;
+      --text:        #1c2321;
+      --text-2:      #5e6962;
+      --text-3:      #9bada7;
+      --dark-card:   #0c2a1e;
+      --shadow:      0 1px 4px rgba(18,74,53,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-md:   0 8px 32px rgba(0,0,0,0.12);
+      --radius:      18px;
+      --radius-sm:   10px;
+      --font-body:   'Space Grotesk', sans-serif;
+    }
+    [data-theme="dark"] {
+      --bg:         #07150e;
+      --surface:    #0e2118;
+      --surface2:   #152b1f;
+      --sidebar-bg: #0e2118;
+      --border:     #1e3d2c;
+      --text:       #e8f5ee;
+      --text-2:     #8db89e;
+      --text-3:     #4d7a60;
+      --dark-card:  #071510;
+      --shadow:     0 1px 4px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+    }
+    [data-contrast="high"] {
+      --bg:         #000000;
+      --surface:    #0a0a0a;
+      --surface2:   #111111;
+      --border:     #00ff88;
+      --text:       #ffffff;
+      --text-2:     #ccffcc;
+      --green:      #00cc66;
+      --green-light:#00ff88;
+      --green-muted:#001a0a;
+      --sidebar-bg: #0a0a0a;
+    }
+    [data-dyslexic="true"] * {
+      font-family: 'Lexend Deca', sans-serif !important;
+      letter-spacing: 0.07em;
+      word-spacing: 0.18em;
+      line-height: 1.85 !important;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.3s, color 0.3s; }
+
+    /* LOADING */
+    .loading-screen {
+      position: fixed; inset: 0; background: #0c2a1e;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 18px; z-index: 9999;
+    }
+    .loading-logo { font-size: 52px; animation: floatLogo 2s ease-in-out infinite; }
+    @keyframes floatLogo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .loading-brand { font-family:'Lexend',sans-serif; font-size:28px; font-weight:800; color:#e9f4ee; letter-spacing:0.04em; }
+    .loading-sub   { font-size:13px; color:#6fac86; text-transform:uppercase; letter-spacing:0.15em; }
+    .spinner { width:38px; height:38px; border:3px solid rgba(255,255,255,0.1); border-top-color:#22c55e; border-radius:50%; animation:spin 0.8s linear infinite; margin-top:8px; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* LAYOUT */
+    .app-layout { display:flex; min-height:100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width:250px; background:var(--sidebar-bg); border-right:1px solid var(--border);
+      display:flex; flex-direction:column; padding:24px 16px;
+      position:fixed; height:100vh; overflow-y:auto; z-index:100;
+      transition:background 0.3s, border-color 0.3s;
+    }
+    .sidebar-logo { display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:28px; }
+    .logo-icon { width:40px; height:40px; background:var(--green); border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .logo-text { font-size:17px; font-weight:800; color:var(--text); line-height:1.2; }
+    .logo-sub  { font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; }
+
+    /* AIDS */
+    .aids-section { background:var(--surface2); border-radius:var(--radius-sm); padding:14px; margin-bottom:20px; border:1px solid var(--border); }
+    .aids-title   { font-size:10px; font-weight:800; color:var(--text-3); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:12px; }
+    .toggle-row   { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .toggle-label { font-size:13px; font-weight:500; color:var(--text-2); }
+    .toggle { width:42px; height:23px; background:var(--border); border-radius:12px; cursor:pointer; position:relative; transition:background 0.2s; border:none; outline:none; flex-shrink:0; }
+    .toggle::after { content:''; position:absolute; width:19px; height:19px; background:white; border-radius:50%; top:2px; left:2px; transition:left 0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+    .toggle.on { background:var(--green-light); }
+    .toggle.on::after { left:21px; }
+
+    /* NAV */
+    .nav-item { display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:var(--radius-sm); cursor:pointer; font-size:14px; font-weight:500; color:var(--text-2); transition:all 0.15s; margin-bottom:2px; }
+    .nav-item:hover  { background:var(--green-muted); color:var(--green); }
+    .nav-item.active { background:var(--green); color:white; font-weight:700; }
+    .nav-icon { font-size:15px; width:20px; text-align:center; }
+    .sidebar-spacer { flex:1; }
+
+    /* LANG */
+    .lang-section { margin-top:16px; padding:0 4px; }
+    .lang-label   { font-size:10px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; }
+    .lang-select  { width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:8px; font-size:13px; background:var(--surface); color:var(--text); font-family:inherit; cursor:pointer; }
+
+    /* USER CHIP */
+    .user-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--surface2); border-radius:var(--radius-sm); margin-top:16px; border:1px solid var(--border); }
+    .user-avatar { width:38px; height:38px; background:linear-gradient(135deg,var(--green),#1e6b4d); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:15px; flex-shrink:0; }
+    .user-chip-name { font-size:13px; font-weight:700; color:var(--text); }
+    .user-chip-tag  { font-size:10px; color:var(--green-light); font-weight:700; text-transform:uppercase; }
+
+    /* VERIFY BANNER */
+    .verify-banner { display:none; background:#fffbeb; border:1px solid #f59e0b; border-radius:8px; padding:8px 12px; margin-top:10px; font-size:12px; color:#92400e; align-items:center; gap:8px; }
+    .verify-banner.show { display:flex; }
+    .verify-link { color:var(--green); font-weight:700; cursor:pointer; text-decoration:underline; }
+
+    .logout-btn { width:100%; padding:9px; background:none; border:1px solid var(--border); border-radius:8px; font-size:13px; color:var(--text-2); cursor:pointer; font-family:inherit; margin-top:8px; transition:all 0.15s; }
+    .logout-btn:hover { background:#fef2f2; color:#dc2626; border-color:#fecaca; }
+
+    /* MAIN */
+    .main { margin-left:250px; flex:1; display:flex; flex-direction:column; min-height:100vh; }
+
+    /* TOPBAR */
+    .topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:16px 28px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; transition:background 0.3s; }
+    .topbar-greeting { font-size:21px; font-weight:800; color:var(--text); }
+    .topbar-sub      { font-size:13px; color:var(--text-2); margin-top:2px; }
+    .topbar-right    { display:flex; align-items:center; gap:10px; }
+    .badge-pill { display:flex; align-items:center; gap:5px; padding:5px 11px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer; }
+    .badge-contrast { background:#0f172a; color:#22c55e; }
+    .badge-dyslexic { background:#f59e0b; color:#000; }
+    .search-bar { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:8px 14px; font-size:14px; color:var(--text-3); cursor:text; min-width:180px; }
+    .icon-btn { width:38px; height:38px; border-radius:10px; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px; color:var(--text-2); transition:all 0.15s; }
+    .icon-btn:hover { background:var(--green-muted); color:var(--green); border-color:var(--green); }
+
+    /* CONTENT */
+    .content { padding:28px; flex:1; }
+    .content-grid { display:grid; grid-template-columns:1fr 320px; gap:24px; }
+
+    /* CARDS */
+    .card { background:var(--surface); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); border:1px solid var(--border); transition:background 0.3s, border-color 0.3s; }
+
+    /* ACTIVE BADGE */
+    .active-badge { display:flex; align-items:center; gap:7px; background:var(--green-muted); color:var(--green); padding:6px 12px; border-radius:20px; font-size:11px; font-weight:700; border:1px solid #b7d9c4; }
+    .active-dot { width:8px; height:8px; background:var(--green-light); border-radius:50%; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.25)} }
+
+    /* CIRCLE PROGRESS */
+    .subject-progress-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0; }
+    .subject-card { border:1.5px solid var(--border); border-radius:14px; padding:16px; text-align:center; transition:border-color 0.2s; cursor:pointer; }
+    .subject-card:hover { border-color:var(--green-light); box-shadow:0 4px 12px var(--green-glow); }
+    .circle-wrap { position:relative; width:72px; height:72px; margin:0 auto 10px; }
+    .circle-wrap svg { transform:rotate(-90deg); }
+    .circle-bg   { fill:none; stroke:var(--border); stroke-width:6; }
+    .circle-fill { fill:none; stroke:var(--green); stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+    .circle-text { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:15px; font-weight:800; color:var(--text); }
+    .subj-name { font-size:10px; font-weight:800; color:var(--text-3); text-transform:uppercase; letter-spacing:0.1em; }
+    .subj-topic { font-size:12px; color:var(--text-2); margin-top:3px; }
+
+    /* RESUME BTN */
+    .resume-btn { width:100%; padding:16px; background:var(--green); color:white; border:none; border-radius:12px; font-size:16px; font-weight:800; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.2s; }
+    .resume-btn:hover { background:var(--green-mid); transform:translateY(-2px); box-shadow:0 8px 28px var(--green-glow); }
+
+    /* SECTION HEADER */
+    .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .section-title  { font-size:15px; font-weight:800; color:var(--text); display:flex; align-items:center; gap:8px; }
+    .view-all       { font-size:13px; color:var(--green); font-weight:700; cursor:pointer; }
+
+    /* LESSON CARDS */
+    .lesson-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .lesson-card { border:1.5px solid var(--border); border-radius:12px; padding:16px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.15s; background:var(--surface); }
+    .lesson-card:hover { border-color:var(--green); box-shadow:0 4px 16px var(--green-glow); transform:translateY(-1px); }
+    .lesson-icon { width:46px; height:46px; border-radius:11px; background:var(--green-muted); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .lesson-title { font-size:14px; font-weight:700; color:var(--text); line-height:1.3; }
+    .lesson-meta  { font-size:12px; color:var(--text-3); margin-top:3px; }
+
+    /* STREAK CARD */
+    .streak-card { background:var(--dark-card); border-radius:var(--radius); padding:24px; margin-bottom:20px; border:1px solid #1e4d36; position:relative; overflow:hidden; }
+    .streak-card::before { content:''; position:absolute; top:-40px; right:-40px; width:130px; height:130px; background:radial-gradient(circle,rgba(34,197,94,.14),transparent); border-radius:50%; }
+    .streak-label { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.15em; color:#4ade80; margin-bottom:8px; }
+    .streak-num   { font-size:68px; font-weight:900; color:#fff; line-height:1; }
+    .streak-days  { font-size:20px; color:#86efac; font-weight:600; }
+    .streak-msg   { font-size:13px; color:#4ade80; margin-top:8px; font-weight:500; }
+    .streak-dots  { display:flex; gap:6px; margin-top:16px; }
+    .streak-dot   { height:4px; flex:1; border-radius:2px; background:rgba(255,255,255,.15); }
+    .streak-dot.filled { background:#22c55e; }
+
+    /* SCHOLARSHIP */
+    .schol-item { border:1.5px solid var(--border); border-radius:12px; padding:14px; margin-bottom:10px; transition:all .15s; }
+    .schol-item:hover { border-color:var(--yellow); background:var(--yellow-muted); }
+    .schol-top  { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+    .schol-name { font-size:14px; font-weight:800; color:var(--text); }
+    .new-badge  { background:var(--yellow); color:#000; font-size:10px; font-weight:800; padding:2px 8px; border-radius:6px; text-transform:uppercase; }
+    .schol-desc { font-size:12px; color:var(--text-2); line-height:1.5; margin-bottom:10px; }
+    .apply-btn  { width:100%; padding:8px; background:var(--green); color:white; border:none; border-radius:8px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; transition:background .15s; }
+    .apply-btn:hover { background:var(--green-mid); }
+
+    /* AI BUBBLE */
+    .ai-bubble { background:var(--green-muted); border:1px solid #b7d9c4; border-radius:14px; padding:16px; margin-bottom:16px; }
+    .ai-bubble-text { font-size:13px; color:var(--green); font-weight:500; font-style:italic; line-height:1.6; }
+
+    /* WELLNESS */
+    .wellness-card  { border-radius:var(--radius); border:1.5px solid var(--border); background:var(--surface); padding:18px; }
+    .wellness-title { font-size:11px; font-weight:800; color:var(--text-2); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px; }
+    .mood-grid { display:flex; gap:8px; }
+    .mood-btn { flex:1; aspect-ratio:1; border-radius:12px; border:2px solid var(--border); background:var(--surface2); font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .mood-btn:hover, .mood-btn.selected { border-color:var(--green); background:var(--green-muted); transform:scale(1.07); }
+
+    /* NOTIF PANEL */
+    .notif-panel { display:none; position:fixed; top:72px; right:28px; width:310px; background:var(--surface); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow-md); z-index:400; padding:20px; }
+    .notif-panel.open { display:block; }
+    .notif-title { font-size:14px; font-weight:800; color:var(--text); margin-bottom:12px; }
+    .notif-item  { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .notif-item:last-child { border-bottom:none; }
+    .notif-dot   { width:8px; height:8px; background:var(--green-light); border-radius:50%; margin-top:5px; flex-shrink:0; }
+    .notif-text  { font-size:13px; color:var(--text-2); line-height:1.4; }
+    .notif-time  { font-size:11px; color:var(--text-3); margin-top:3px; }
+
+    /* PROGRESS PAGE */
+    .progress-item-header { display:flex; justify-content:space-between; margin-bottom:6px; font-size:14px; font-weight:600; color:var(--text); }
+    .progress-bar  { height:10px; background:var(--surface2); border-radius:5px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--green),#22c55e); border-radius:5px; transition:width 1.2s cubic-bezier(.4,0,.2,1); }
+
+    /* LESSON MODAL */
+    .lesson-viewer { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:300; align-items:center; justify-content:center; padding:24px; }
+    .lesson-viewer.open { display:flex; }
+    .lesson-modal { background:var(--surface); border-radius:22px; width:100%; max-width:700px; max-height:82vh; overflow-y:auto; padding:32px; box-shadow:var(--shadow-md); }
+    .lesson-modal-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; }
+    .lesson-modal-title  { font-size:24px; font-weight:900; color:var(--text); }
+    .close-btn { width:36px; height:36px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; font-size:17px; display:flex; align-items:center; justify-content:center; color:var(--text-2); flex-shrink:0; }
+    .lesson-tools { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+    .tool-btn { padding:8px 14px; border:1px solid var(--border); border-radius:8px; background:var(--surface2); font-size:13px; font-family:inherit; cursor:pointer; color:var(--text-2); transition:all .15s; }
+    .tool-btn:hover { background:var(--green-muted); color:var(--green); border-color:var(--green); }
+    .read-aloud-btn { padding:8px 16px; background:var(--green); color:white; border:none; border-radius:8px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:6px; margin-left:auto; transition:background .15s; }
+    .read-aloud-btn:hover { background:var(--green-mid); }
+    .lesson-content { font-size:15px; line-height:1.85; color:var(--text); margin-bottom:20px; }
+    .lesson-content .highlight { background:#fef9c3; border-bottom:2px solid #f59e0b; padding:0 3px; border-radius:2px; }
+    .visual-aid { background:var(--green-muted); border-radius:12px; padding:40px; text-align:center; margin:16px 0; color:var(--green); font-size:13px; border:1px solid #b7d9c4; }
+    .visual-aid-icon { font-size:52px; margin-bottom:10px; }
+
+    /* OTP MODAL */
+    .otp-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:500; align-items:center; justify-content:center; padding:24px; }
+    .otp-overlay.open { display:flex; }
+    .otp-modal { background:var(--surface); border-radius:20px; width:100%; max-width:420px; padding:32px; box-shadow:var(--shadow-md); }
+    .otp-title { font-size:22px; font-weight:800; color:var(--text); margin-bottom:8px; }
+    .otp-sub   { font-size:14px; color:var(--text-2); margin-bottom:24px; line-height:1.5; }
+    .otp-input { width:100%; padding:14px; border:2px solid var(--border); border-radius:10px; font-size:22px; text-align:center; letter-spacing:0.3em; font-family:inherit; color:var(--text); background:var(--surface); outline:none; }
+    .otp-input:focus { border-color:var(--green-light); }
+    .otp-btn { width:100%; padding:13px; background:var(--green); color:white; border:none; border-radius:10px; font-size:15px; font-weight:800; font-family:inherit; cursor:pointer; margin-top:14px; }
+    .otp-btn:hover { background:var(--green-mid); }
+
+    /* AI FAB */
+    .ai-fab { position:fixed; bottom:28px; right:28px; width:62px; height:62px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 32px var(--green-glow); z-index:200; transition:all .2s; border:none; font-size:24px; }
+    .ai-fab:hover { transform:scale(1.1); }
+    .ai-fab-tip { position:fixed; bottom:98px; right:28px; background:#0f172a; color:white; font-size:11px; font-weight:700; padding:5px 12px; border-radius:8px; white-space:nowrap; pointer-events:none; }
+
+    /* PAGES */
+    .page { display:none; }
+    .page.active { display:block; animation:fadeUp .3s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:#0f172a; color:white; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; opacity:0; transition:all .3s; z-index:600; pointer-events:none; white-space:nowrap; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    .mt-16 { margin-top:16px; }
+    .mt-20 { margin-top:20px; }
+
+    @media (max-width:900px) {
+      .sidebar { width:200px; }
+      .main    { margin-left:200px; }
+      .content-grid { grid-template-columns:1fr; }
+      .lesson-grid  { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-logo">📗</div>
+  <div class="loading-brand">AccessLearn</div>
+  <div class="loading-sub">AI Sahayak Dashboard</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- DASHBOARD -->
+<div id="dashSection" style="display:none;">
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">📗</div>
+      <div>
+        <div class="logo-text">AccessLearn</div>
+        <div class="logo-sub">AI Sahayak</div>
+      </div>
+    </div>
+
+    <div class="aids-section">
+      <div class="aids-title">✦ My Accessibility Aids</div>
+      <div class="toggle-row">
+        <span class="toggle-label">High Contrast</span>
+        <button class="toggle" id="toggleContrast" onclick="toggleContrast()"></button>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Text-to-Speech</span>
+        <button class="toggle" id="toggleTTS" onclick="toggleTTSMode()"></button>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Dyslexic Font</span>
+        <button class="toggle on" id="toggleDyslexic" onclick="toggleDyslexicFont()"></button>
+      </div>
+      <div class="toggle-row">
+        <span class="toggle-label">Dark Mode</span>
+        <button class="toggle" id="toggleDark" onclick="toggleDarkMode()"></button>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+        <span class="nav-icon"><i class="fa-solid fa-table-columns"></i></span> Dashboard
+      </div>
+      <div class="nav-item" id="nav-lessons" onclick="showPage('lessons')">
+        <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span> NCERT Lessons
+      </div>
+      <div class="nav-item" id="nav-scholarships" onclick="showPage('scholarships')">
+        <span class="nav-icon"><i class="fa-solid fa-graduation-cap"></i></span> Scholarships
+      </div>
+      <div class="nav-item" id="nav-progress" onclick="showPage('progress')">
+        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span> My Progress
+      </div>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="lang-section">
+      <div class="lang-label">🌐 Language</div>
+      <select class="lang-select" id="languageSelect" onchange="savePreference('language', this.value)">
+        <option>English</option>
+        <option>हिंदी</option>
+        <option>मराठी</option>
+        <option>Tamil</option>
+        <option>Telugu</option>
+      </select>
+    </div>
+
+    <div class="user-chip">
+      <div class="user-avatar" id="sidebarAvatar">A</div>
+      <div>
+        <div class="user-chip-name" id="sidebarName">Loading...</div>
+        <div class="user-chip-tag"  id="sidebarTag">Student</div>
+      </div>
+    </div>
+
+    <!-- Email not verified banner — shown by JS -->
+    <div class="verify-banner" id="verifyBanner">
+      <i class="fa-solid fa-envelope"></i>
+      <span>Email not verified. <span class="verify-link" onclick="sendVerifyOtp()">Send OTP →</span></span>
+    </div>
+
+    <button class="logout-btn" onclick="handleLogout()">
+      <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-greeting" id="topbarGreeting">Namaste! 👋</div>
+        <div class="topbar-sub"      id="topbarSub">Welcome back to AccessLearn</div>
+      </div>
+      <div class="topbar-right">
+        <div class="badge-pill badge-contrast" onclick="toggleContrast()">Aa Contrast</div>
+        <div class="badge-pill badge-dyslexic" onclick="toggleDyslexicFont()">A+ Dyslexic</div>
+        <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i> &nbsp;Search lessons...</div>
+        <button class="icon-btn" onclick="toggleNotif()"><i class="fa-regular fa-bell"></i></button>
+        <button class="icon-btn" onclick="toggleDarkMode()"><i class="fa-solid fa-circle-half-stroke"></i></button>
+      </div>
+    </header>
+
+    <!-- NOTIF PANEL -->
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-title">🔔 Notifications</div>
+      <div class="notif-item"><div class="notif-dot"></div><div><div class="notif-text">New: PM-USP Disability Scholarship open</div><div class="notif-time">2 hours ago</div></div></div>
+      <div class="notif-item"><div class="notif-dot"></div><div><div class="notif-text">You're on a learning streak! Keep going 🔥</div><div class="notif-time">Today</div></div></div>
+      <div class="notif-item"><div class="notif-dot"></div><div><div class="notif-text">New lesson: Democratic Politics – Social Ch 2</div><div class="notif-time">Yesterday</div></div></div>
+    </div>
+
+    <!-- CONTENT PAGES -->
+    <div class="content">
+
+      <!-- ====== DASHBOARD ====== -->
+      <div class="page active" id="page-dashboard">
+        <div class="content-grid">
+
+          <!-- LEFT -->
+          <div>
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div>
+                  <div style="font-size:20px;font-weight:800;color:var(--text);">Daily Learning Path</div>
+                  <div style="font-size:13px;color:var(--text-2);margin-top:2px;" id="dashFocusLabel">Science &amp; Mathematics Focus</div>
+                </div>
+                <div class="active-badge"><div class="active-dot"></div> ACTIVE LEARNING</div>
+              </div>
+              <div class="subject-progress-grid">
+                <div class="subject-card" onclick="showPage('progress')">
+                  <div class="circle-wrap">
+                    <svg width="72" height="72" viewBox="0 0 72 72"><circle class="circle-bg" cx="36" cy="36" r="28"/><circle class="circle-fill" cx="36" cy="36" r="28" stroke-dasharray="175.9" stroke-dashoffset="35.2" id="circlePhysics"/></svg>
+                    <div class="circle-text" id="textPhysics">80%</div>
+                  </div>
+                  <div class="subj-name">PHYSICS</div><div class="subj-topic">Light</div>
+                </div>
+                <div class="subject-card" onclick="showPage('progress')">
+                  <div class="circle-wrap">
+                    <svg width="72" height="72" viewBox="0 0 72 72"><circle class="circle-bg" cx="36" cy="36" r="28"/><circle class="circle-fill" cx="36" cy="36" r="28" stroke-dasharray="175.9" stroke-dashoffset="105.5" id="circleMaths"/></svg>
+                    <div class="circle-text" id="textMaths">40%</div>
+                  </div>
+                  <div class="subj-name">MATHS</div><div class="subj-topic">Algebra</div>
+                </div>
+                <div class="subject-card" onclick="showPage('progress')">
+                  <div class="circle-wrap">
+                    <svg width="72" height="72" viewBox="0 0 72 72"><circle class="circle-bg" cx="36" cy="36" r="28"/><circle class="circle-fill" cx="36" cy="36" r="28" stroke-dasharray="175.9" stroke-dashoffset="175.9" id="circleSocial"/></svg>
+                    <div class="circle-text" id="textSocial">0%</div>
+                  </div>
+                  <div class="subj-name">SOCIAL</div><div class="subj-topic">Civics</div>
+                </div>
+              </div>
+              <button class="resume-btn" onclick="openLesson(0)">
+                <i class="fa-solid fa-play"></i> RESUME LEARNING
+              </button>
+            </div>
+
+            <div class="card mt-20">
+              <div class="section-header">
+                <div class="section-title"><i class="fa-solid fa-headphones"></i> Audio-First NCERT Lessons</div>
+                <span class="view-all" onclick="showPage('lessons')">View All →</span>
+              </div>
+              <div class="lesson-grid" id="dashLessons">
+                <div style="padding:24px;text-align:center;color:var(--text-3);grid-column:1/-1;">
+                  <div class="spinner" style="margin:0 auto;border-top-color:var(--green);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div>
+            <div class="streak-card">
+              <div class="streak-label">🔥 Learning Streak</div>
+              <div><span class="streak-num" id="streakNum">0</span><span class="streak-days"> Days</span></div>
+              <div class="streak-msg" id="streakMsg">Start your learning journey today!</div>
+              <div class="streak-dots" id="streakDots"></div>
+            </div>
+
+            <div class="card mt-20">
+              <div class="section-header">
+                <div class="section-title"><i class="fa-solid fa-bullhorn"></i> Scholarships</div>
+                <span class="view-all" onclick="showPage('scholarships')">See All →</span>
+              </div>
+              <div id="dashScholarships">
+                <div style="padding:24px;text-align:center;color:var(--text-3);">
+                  <div class="spinner" style="margin:0 auto;border-top-color:var(--green);"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-bubble mt-16">
+              <div style="font-size:15px;font-weight:800;color:var(--green);margin-bottom:6px;">🤖 AI Sahayak</div>
+              <div class="ai-bubble-text">"Namaste! I'm here to read your lessons aloud. Press ▶ Read Aloud inside any lesson, or tap the mic button!"</div>
+            </div>
+
+            <div class="wellness-card mt-16">
+              <div class="wellness-title">💛 Daily Wellness Check</div>
+              <div class="mood-grid">
+                <button class="mood-btn" onclick="logMood('happy',this)"   title="Happy">😊</button>
+                <button class="mood-btn" onclick="logMood('neutral',this)" title="Neutral">😐</button>
+                <button class="mood-btn" onclick="logMood('tired',this)"   title="Tired">😴</button>
+                <button class="mood-btn" onclick="logMood('stressed',this)" title="Stressed">😤</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /dashboard -->
+
+      <!-- ====== LESSONS PAGE ====== -->
+      <div class="page" id="page-lessons">
+        <h2 style="font-size:24px;font-weight:900;margin-bottom:20px;color:var(--text);">
+          <i class="fa-solid fa-book-open" style="color:var(--green);margin-right:8px;"></i>All NCERT Lessons
+        </h2>
+        <div id="allLessonsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+          <div style="padding:40px;text-align:center;color:var(--text-3);grid-column:1/-1;">
+            <div class="spinner" style="margin:0 auto;border-top-color:var(--green);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== SCHOLARSHIPS PAGE ====== -->
+      <div class="page" id="page-scholarships">
+        <h2 style="font-size:24px;font-weight:900;margin-bottom:20px;color:var(--text);">
+          <i class="fa-solid fa-graduation-cap" style="color:var(--green);margin-right:8px;"></i>Scholarships &amp; Schemes
+        </h2>
+        <div id="allScholarships" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+          <div style="padding:40px;text-align:center;color:var(--text-3);grid-column:1/-1;">
+            <div class="spinner" style="margin:0 auto;border-top-color:var(--green);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== PROGRESS PAGE ====== -->
+      <div class="page" id="page-progress">
+        <h2 style="font-size:24px;font-weight:900;margin-bottom:24px;color:var(--text);">
+          <i class="fa-solid fa-chart-line" style="color:var(--green);margin-right:8px;"></i>My Progress
+        </h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card">
+            <div class="section-title" style="margin-bottom:20px;">Subject Progress</div>
+            <div id="progressBars" style="display:flex;flex-direction:column;gap:18px;"></div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div class="section-title" style="margin-bottom:16px;">🔥 Streak &amp; Stats</div>
+            <div style="font-size:80px;font-weight:900;color:var(--green);" id="progressStreakBig">0</div>
+            <div style="color:var(--text-2);font-size:16px;margin-bottom:8px;">Day Streak</div>
+            <div style="color:var(--text-3);font-size:13px;" id="progressLongest">Longest: 0 days</div>
+            <div style="margin-top:20px;padding:16px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);">
+              <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:8px;">Lessons Completed</div>
+              <div style="font-size:40px;font-weight:900;color:var(--green);" id="completedCount">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.content -->
+  </main>
+</div><!-- /.app-layout -->
+
+<!-- AI FAB -->
+<div class="ai-fab-tip">AI Sahayak 🎙️</div>
+<button class="ai-fab" onclick="speak('Namaste! I am AI Sahayak from AccessLearn. I help students with ADHD and Dyslexia by reading lessons aloud. How can I assist you today?')">🎤</button>
+</div><!-- /#dashSection -->
+
+<!-- LESSON VIEWER MODAL -->
+<div class="lesson-viewer" id="lessonViewer">
+  <div class="lesson-modal">
+    <div class="lesson-modal-header">
+      <div>
+        <div style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;" id="lessonBadge">PHYSICS • CHAPTER 1</div>
+        <div class="lesson-modal-title" id="lessonTitle">Lesson</div>
+      </div>
+      <button class="close-btn" onclick="closeLesson()">✕</button>
+    </div>
+    <div class="lesson-tools">
+      <button class="tool-btn" onclick="changeFontSize()"><i class="fa-solid fa-text-height"></i> Font Size</button>
+      <button class="tool-btn" onclick="toggleHighlight()"><i class="fa-solid fa-highlighter"></i> Highlights</button>
+      <button class="tool-btn" onclick="printLesson()"><i class="fa-solid fa-print"></i> Print</button>
+      <button class="read-aloud-btn" id="readAloudBtn" onclick="readAloud()">
+        <i class="fa-solid fa-play"></i> Read Aloud
+      </button>
+    </div>
+    <div class="lesson-content" id="lessonContent"></div>
+    <div class="visual-aid">
+      <div class="visual-aid-icon">🔬</div>
+      <div id="visualAidCaption">Visual Aid</div>
+    </div>
+    <div style="margin-top:20px;display:flex;gap:10px;">
+      <button style="flex:1;padding:12px;border:2px solid var(--border);border-radius:10px;background:none;font-family:inherit;font-size:14px;cursor:pointer;color:var(--text-2);" onclick="closeLesson()">← Back</button>
+      <button style="flex:2;padding:12px;background:var(--green);color:white;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;" onclick="markComplete()">✓ Mark as Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- OTP VERIFY MODAL -->
+<div class="otp-overlay" id="otpOverlay">
+  <div class="otp-modal">
+    <div class="otp-title">📩 Verify Your Email</div>
+    <div class="otp-sub">A 6-digit OTP has been sent to your registered email. Enter it below to verify your account and unlock all features.</div>
+    <input class="otp-input" id="otpInput" type="text" maxlength="6" placeholder="_ _ _ _ _ _">
+    <button class="otp-btn" onclick="submitOtp()">Verify Account</button>
+    <button onclick="document.getElementById('otpOverlay').classList.remove('open')"
+      style="width:100%;margin-top:10px;padding:10px;background:none;border:none;font-family:inherit;font-size:13px;color:var(--text-3);cursor:pointer;">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT — Integrated with MernAuth cookie-based backend
+     All fetch calls use credentials:'include' for httpOnly cookies
+     ============================================================ -->
+<script>
+// ============================================================
+// CONFIG
+// Change this to your deployed backend URL in production
+// ============================================================
+const API = 'http://localhost:5000';
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser   = null;
+let lessons       = [];
+let scholarships  = [];
+let openLessonIdx = 0;
+let fontSize      = 15;
+let ttsOn         = false;
+let isReading     = false;
+
+// ============================================================
+// DEMO DATA (fallback when backend is offline)
+// ============================================================
+const DEMO_USER = {
+  name: 'Abhinav Kumar',
+  isAccountverified: true,
+  school: 'DPS Aurangabad',
+  grade: 'Class 10',
+  abilityType: ['ADHD', 'Dyslexia'],
+  preferences: { highContrast: false, dyslexicFont: true, textToSpeech: false, darkMode: false, language: 'English' },
+  streak: { current: 12, longest: 12 },
+  progress: { physics: 80, maths: 40, social: 0, science: 60 },
+  completedLessons: []
+};
+
+const DEMO_LESSONS = [
+  { _id:'1', title:"Newton's First Law of Motion", subject:'physics', chapter:3, duration:18, isAudioFirst:false,
+    content:"<span class='highlight'>Inertia</span> is the tendency of objects in motion to stay in motion, and objects at rest to stay at rest, unless a force causes its speed or direction to change.<br><br>Newton's first law states that every object will remain at rest or in uniform motion in a straight line unless acted upon by an external force. This tendency to resist changes in a state of motion is what we call inertia.<br><br>If there is no net force acting on an object, it will maintain a constant velocity. If that velocity is zero, the object remains at rest.",
+    visualAidCaption:'Visual Aid: A sphere illustrating inertia' },
+  { _id:'2', title:'Chemical Reactions', subject:'science', chapter:1, duration:14, isAudioFirst:true,
+    content:"A <span class='highlight'>chemical reaction</span> is a process where substances called reactants are transformed into new substances called products.<br><br>During a reaction, bonds between atoms are broken and new bonds are formed. Key indicators of a chemical reaction: <span class='highlight'>color change</span>, gas production, temperature change, and precipitate formation.",
+    visualAidCaption:'Diagram: Reactants → Products with bond changes' },
+  { _id:'3', title:'Quadratic Equations', subject:'maths', chapter:4, duration:22, isAudioFirst:true,
+    content:"A <span class='highlight'>quadratic equation</span> has the standard form: ax² + bx + c = 0, where a ≠ 0.<br><br>The solutions (roots) can be found using the quadratic formula:<br><br><strong>x = (−b ± √(b²−4ac)) / 2a</strong><br><br>The <span class='highlight'>discriminant</span> D = b²−4ac tells us: D &gt; 0 means two real roots, D = 0 means one repeated root, D &lt; 0 means no real roots.",
+    visualAidCaption:'Graph: Parabola showing roots of quadratic equation' },
+  { _id:'4', title:'Light and Reflection', subject:'physics', chapter:1, duration:20, isAudioFirst:true,
+    content:"<span class='highlight'>Light</span> travels in straight lines called rays. When light hits a smooth, shiny surface, it bounces back — this is called <span class='highlight'>reflection</span>.<br><br>The angle of incidence always equals the angle of reflection. Mirrors use this principle to create images of objects placed in front of them.",
+    visualAidCaption:'Diagram: Angle of incidence = Angle of reflection' },
+  { _id:'5', title:'Democratic Politics', subject:'social', chapter:2, duration:12, isAudioFirst:true,
+    content:"<span class='highlight'>Democracy</span> is a system of government where the citizens exercise power by voting. In a representative democracy, people elect officials to make decisions on their behalf.<br><br>India is the world's largest democracy. Key features include: free and fair elections, rule of law, fundamental rights, and an independent judiciary.",
+    visualAidCaption:'Diagram: Structure of the Indian Government' }
+];
+
+const DEMO_SCHOLARSHIPS = [
+  { _id:'1', name:'PM-USP Disability', scheme:'PM-USP', description:'Pre-Matric scholarship for students with certified disabilities. Apply before Oct 15.', isNew:true, applyUrl:'https://scholarships.gov.in', category:'disability', eligibility:['Disability certificate','Pre-matric','Income < ₹2.5L'] },
+  { _id:'2', name:'NSP Merit Scholarship', scheme:'NSP', description:'National merit-cum-means scholarship for Class 9–12 students. Strong academics required.', isNew:false, applyUrl:'https://scholarships.gov.in', category:'merit', eligibility:['Class 9-12','Marks > 50%','Income < ₹3.5L'] },
+  { _id:'3', name:'Maharashtra Disability Scheme', scheme:'Mahadbt', description:'State-level scholarship for ADHD, Dyslexia, and Learning Disability students in Maharashtra.', isNew:true, applyUrl:'https://mahadbt.maharashtra.gov.in', category:'state', eligibility:['Maharashtra resident','Disability certificate','Any income'] }
+];
+
+const SUBJ_ICONS = { physics:'⚡', maths:'➗', social:'🌍', science:'🔬' };
+
+// ============================================================
+// BOOT — runs on page load
+// ============================================================
+window.addEventListener('load', async () => {
+  await initDashboard();
+});
+
+async function initDashboard() {
+  try {
+    // 1. Verify auth using MernAuth cookie
+    // The httpOnly cookie is sent automatically via credentials:'include'
+    const authRes = await api('/api/auth/is-auth', 'GET');
+
+    if (!authRes || !authRes.success) {
+      // Not authenticated → redirect to login page
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // 2. Update streak on login
+    await api('/api/user/update-streak', 'POST').catch(() => {});
+
+    // 3. Fetch full dashboard profile from MongoDB
+    const profile = await api('/api/user/dashboard-profile', 'GET');
+    currentUser = (profile && !profile.error) ? profile : DEMO_USER;
+
+    // 4. Fetch lessons + scholarships in parallel
+    const [lessonsData, scholData] = await Promise.all([
+      api('/api/data/lessons?limit=20', 'GET'),
+      api('/api/data/scholarships', 'GET')
+    ]);
+    lessons      = Array.isArray(lessonsData) && lessonsData.length ? lessonsData : DEMO_LESSONS;
+    scholarships = Array.isArray(scholData)   && scholData.length   ? scholData   : DEMO_SCHOLARSHIPS;
+
+  } catch (err) {
+    // Backend offline → demo mode
+    console.warn('Backend offline, using demo data.');
+    currentUser  = DEMO_USER;
+    lessons      = DEMO_LESSONS;
+    scholarships = DEMO_SCHOLARSHIPS;
+  }
+
+  applyPreferences();
+  updateUserUI();
+  renderAll();
+
+  setTimeout(() => {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('dashSection').style.display = 'block';
+  }, 1200);
+}
+
+// ============================================================
+// API HELPER
+// credentials:'include' sends the httpOnly cookie automatically
+// This matches the MernAuth cookie-based auth system exactly
+// ============================================================
+async function api(path, method = 'GET', body = null) {
+  const opts = {
+    method,
+    credentials: 'include',         // ← sends httpOnly cookie
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  return res.json();
+}
+
+// ============================================================
+// PREFERENCES
+// ============================================================
+function applyPreferences() {
+  const p = currentUser?.preferences || {};
+  if (p.highContrast) { document.documentElement.setAttribute('data-contrast','high'); document.getElementById('toggleContrast').classList.add('on'); }
+  if (p.dyslexicFont !== false) { document.documentElement.setAttribute('data-dyslexic','true'); document.getElementById('toggleDyslexic').classList.add('on'); }
+  if (p.darkMode) { document.documentElement.setAttribute('data-theme','dark'); document.getElementById('toggleDark').classList.add('on'); }
+  if (p.textToSpeech) { ttsOn = true; document.getElementById('toggleTTS').classList.add('on'); }
+  if (p.language) {
+    const sel = document.getElementById('languageSelect');
+    [...sel.options].forEach(o => { o.selected = o.value === p.language || o.text === p.language; });
+  }
+}
+
+async function savePreference(key, value) {
+  if (!currentUser) return;
+  currentUser.preferences = currentUser.preferences || {};
+  currentUser.preferences[key] = value;
+  api('/api/user/preferences', 'PUT', currentUser.preferences).catch(() => {});
+}
+
+function toggleContrast() {
+  const on = document.getElementById('toggleContrast').classList.toggle('on');
+  document.documentElement.setAttribute('data-contrast', on ? 'high' : 'normal');
+  savePreference('highContrast', on);
+}
+function toggleDarkMode() {
+  const on = document.getElementById('toggleDark').classList.toggle('on');
+  document.documentElement.setAttribute('data-theme', on ? 'dark' : 'light');
+  savePreference('darkMode', on);
+}
+function toggleDyslexicFont() {
+  const on = document.getElementById('toggleDyslexic').classList.toggle('on');
+  document.documentElement.setAttribute('data-dyslexic', on ? 'true' : 'false');
+  savePreference('dyslexicFont', on);
+}
+function toggleTTSMode() {
+  ttsOn = document.getElementById('toggleTTS').classList.toggle('on');
+  savePreference('textToSpeech', ttsOn);
+  showToast(ttsOn ? '🔊 Text-to-Speech ON' : '🔇 Text-to-Speech OFF');
+}
+
+// ============================================================
+// RENDER USER DATA
+// ============================================================
+function updateUserUI() {
+  const u = currentUser || {};
+  const firstName = (u.name || 'Student').split(' ')[0];
+
+  document.getElementById('topbarGreeting').textContent = `Namaste, ${firstName}! 👋`;
+  document.getElementById('topbarSub').textContent      = `${u.grade || 'Student'} · ${(u.abilityType||[]).join(' & ')}`;
+  document.getElementById('sidebarName').textContent    = u.name || 'Student';
+  document.getElementById('sidebarTag').textContent     = (u.abilityType||[]).join(' · ') || 'Student';
+  document.getElementById('sidebarAvatar').textContent  = (u.name || 'S')[0].toUpperCase();
+  document.getElementById('dashFocusLabel').textContent = `${u.school ? u.school + ' · ' : ''}${u.grade || ''} Focus`;
+
+  // Verify email banner (MernAuth field is isAccountverified)
+  if (!u.isAccountverified && !u.isAccountVerified) {
+    document.getElementById('verifyBanner').classList.add('show');
+  }
+
+  // Streak
+  const streak = u.streak?.current || 0;
+  document.getElementById('streakNum').textContent         = streak;
+  document.getElementById('progressStreakBig').textContent = streak;
+  document.getElementById('progressLongest').textContent   = `Longest streak: ${u.streak?.longest || 0} days`;
+  document.getElementById('completedCount').textContent    = (u.completedLessons || []).length;
+
+  const msgs = ['Start your learning journey today!', 'Great start! Keep going 💪', 'You\'re building a habit! 🌟', 'On fire! Top 5% of learners this week 🏆'];
+  const msgIdx = streak === 0 ? 0 : streak < 5 ? 1 : streak < 10 ? 2 : 3;
+  document.getElementById('streakMsg').textContent = msgs[msgIdx];
+
+  // 7-day streak dots
+  const dotsEl = document.getElementById('streakDots');
+  dotsEl.innerHTML = '';
+  for (let i=0; i<7; i++) {
+    const d = document.createElement('div');
+    d.className = 'streak-dot' + (i < Math.min(streak,7) ? ' filled' : '');
+    dotsEl.appendChild(d);
+  }
+
+  // Circle progress
+  const prog = u.progress || {};
+  setCircle('circlePhysics', 'textPhysics', prog.physics || 0);
+  setCircle('circleMaths',   'textMaths',   prog.maths   || 0);
+  setCircle('circleSocial',  'textSocial',  prog.social  || 0);
+
+  // Progress bars
+  const bars = document.getElementById('progressBars');
+  const subjects = [
+    { key:'physics', label:'Physics',        icon:'⚡' },
+    { key:'maths',   label:'Mathematics',    icon:'➗' },
+    { key:'social',  label:'Social Studies', icon:'🌍' },
+    { key:'science', label:'Science',        icon:'🔬' }
+  ];
+  if (bars) bars.innerHTML = subjects.map(s => `
+    <div>
+      <div class="progress-item-header">
+        <span>${s.icon} ${s.label}</span>
+        <span style="color:var(--green);font-weight:700;">${prog[s.key]||0}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${prog[s.key]||0}%"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setCircle(cId, tId, pct) {
+  const c = document.getElementById(cId);
+  const t = document.getElementById(tId);
+  if (c) c.setAttribute('stroke-dashoffset', ((1 - pct/100) * 2 * Math.PI * 28).toFixed(1));
+  if (t) t.textContent = pct + '%';
+}
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+function renderAll() {
+  renderDashLessons();
+  renderAllLessons();
+  renderDashScholarships();
+  renderAllScholarships();
+}
+
+function renderDashLessons() {
+  const el = document.getElementById('dashLessons');
+  if (!el) return;
+  if (!lessons.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-3);grid-column:1/-1;">No lessons found. Run /api/seed to add sample data.</div>'; return; }
+  el.innerHTML = lessons.slice(0,4).map((l,i) => `
+    <div class="lesson-card" onclick="openLesson(${i})">
+      <div class="lesson-icon">${SUBJ_ICONS[l.subject]||'📖'}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="lesson-title">${l.title}</div>
+        <div class="lesson-meta">Ch ${l.chapter} · ${l.duration} min${l.isAudioFirst?' · 🎧':''}</div>
+      </div>
+      <div style="color:var(--text-3);font-size:13px;">▶</div>
+    </div>
+  `).join('');
+}
+
+function renderAllLessons() {
+  const el = document.getElementById('allLessonsGrid');
+  if (!el) return;
+  if (!lessons.length) { el.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-3);grid-column:1/-1;">No lessons found. Visit <code>http://localhost:5000/api/seed</code> to populate sample data.</div>'; return; }
+  el.innerHTML = lessons.map((l,i) => `
+    <div class="card" style="cursor:pointer;" onclick="openLesson(${i})">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div class="lesson-icon">${SUBJ_ICONS[l.subject]||'📖'}</div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;color:var(--green);font-weight:800;letter-spacing:.06em;">${l.subject} · Ch ${l.chapter}</div>
+          <div style="font-size:16px;font-weight:800;color:var(--text);">${l.title}</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:14px;">
+        ${(l.content||'').replace(/<[^>]+>/g,'').substring(0,110)}...
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:12px;color:var(--text-3);">⏱ ${l.duration} mins${l.isAudioFirst?' &nbsp;·&nbsp; 🎧 Audio-First':''}</div>
+        <button style="padding:7px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;">Start →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDashScholarships() {
+  const el = document.getElementById('dashScholarships');
+  if (!el) return;
+  if (!scholarships.length) { el.innerHTML = '<div style="padding:16px;color:var(--text-3);font-size:13px;">No scholarships found.</div>'; return; }
+  el.innerHTML = scholarships.slice(0,2).map(s => `
+    <div class="schol-item">
+      <div class="schol-top">
+        <div class="schol-name">${s.scheme ? s.scheme+' · ':''} ${s.name}</div>
+        ${s.isNew ? '<div class="new-badge">NEW</div>':''}
+      </div>
+      <div class="schol-desc">${s.description}</div>
+      <button class="apply-btn" onclick="window.open('${s.applyUrl}','_blank')">APPLY NOW</button>
+    </div>
+  `).join('');
+}
+
+function renderAllScholarships() {
+  const el = document.getElementById('allScholarships');
+  if (!el) return;
+  if (!scholarships.length) { el.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-3);grid-column:1/-1;">No scholarships found.</div>'; return; }
+  el.innerHTML = scholarships.map(s => `
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:17px;font-weight:800;color:var(--text);">${s.name}</div>
+        ${s.isNew ? '<div class="new-badge">NEW</div>':''}
+      </div>
+      <div style="font-size:11px;text-transform:uppercase;color:var(--green);font-weight:800;letter-spacing:.06em;margin-bottom:8px;">${s.category||'scholarship'}</div>
+      <div style="font-size:14px;color:var(--text-2);line-height:1.6;margin-bottom:12px;">${s.description||''}</div>
+      ${s.eligibility?.length ? `<div style="font-size:12px;color:var(--text-3);margin-bottom:14px;">${s.eligibility.map(e=>'✓ '+e).join(' &nbsp; ')}</div>`:''}
+      <button class="apply-btn" onclick="window.open('${s.applyUrl}','_blank')">Apply Now →</button>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(page) {
+  ['dashboard','lessons','scholarships','progress'].forEach(p => {
+    const pageEl = document.getElementById(`page-${p}`);
+    const navEl  = document.getElementById(`nav-${p}`);
+    if (pageEl) pageEl.classList.toggle('active', p === page);
+    if (navEl)  navEl.classList.toggle('active',  p === page);
+  });
+  renderAll(); // ensure fresh render on each tab switch
+}
+
+// ============================================================
+// LESSON VIEWER
+// ============================================================
+function openLesson(idx) {
+  openLessonIdx = idx;
+  const l = lessons[idx];
+  if (!l) return;
+  document.getElementById('lessonTitle').textContent   = l.title;
+  document.getElementById('lessonBadge').textContent   = `${(l.subject||'').toUpperCase()} · CHAPTER ${l.chapter}`;
+  document.getElementById('lessonContent').innerHTML   = l.content || '';
+  document.getElementById('visualAidCaption').textContent = l.visualAidCaption || 'Visual Aid';
+  document.getElementById('lessonContent').style.fontSize = fontSize + 'px';
+  document.getElementById('lessonViewer').classList.add('open');
+  if (ttsOn) readAloud();
+}
+
+function closeLesson() {
+  document.getElementById('lessonViewer').classList.remove('open');
+  window.speechSynthesis.cancel();
+  isReading = false;
+  document.getElementById('readAloudBtn').innerHTML = '<i class="fa-solid fa-play"></i> Read Aloud';
+}
+
+async function markComplete() {
+  const l = lessons[openLessonIdx];
+  if (!l) return;
+  const newPct = Math.min(100, (currentUser?.progress?.[l.subject] || 0) + 20);
+  try {
+    await api('/api/user/progress', 'PUT', { subject: l.subject, percentage: newPct, lessonId: l._id });
+    if (currentUser?.progress) currentUser.progress[l.subject] = newPct;
+    if (currentUser?.completedLessons) currentUser.completedLessons.push(l._id);
+    showToast(`✅ "${l.title}" complete! +20% ${l.subject} progress`);
+    updateUserUI();
+  } catch {}
+  closeLesson();
+}
+
+function changeFontSize() {
+  const sizes = [15, 18, 12];
+  fontSize = sizes[(sizes.indexOf(fontSize) + 1) % sizes.length];
+  document.getElementById('lessonContent').style.fontSize = fontSize + 'px';
+  showToast('Font size: ' + fontSize + 'px');
+}
+
+function toggleHighlight() {
+  document.querySelectorAll('.lesson-content .highlight').forEach(el => {
+    el.style.background = el.style.background ? '' : 'transparent';
+    el.style.borderBottom = el.style.borderBottom ? '' : 'none';
+  });
+}
+
+function printLesson() {
+  const content = document.getElementById('lessonContent')?.innerText || '';
+  const title   = document.getElementById('lessonTitle')?.textContent || 'Lesson';
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>${title}</title><style>body{font-family:'Lexend',sans-serif;padding:40px;line-height:1.8;font-size:16px;}</style></head><body><h1>${title}</h1><p>${content.replace(/\n/g,'<br>')}</p></body></html>`);
+  w.print();
+}
+
+// ============================================================
+// TEXT TO SPEECH
+// ============================================================
+function readAloud() {
+  const text = document.getElementById('lessonContent')?.innerText || '';
+  const btn  = document.getElementById('readAloudBtn');
+  if (isReading) {
+    window.speechSynthesis.cancel();
+    isReading = false;
+    btn.innerHTML = '<i class="fa-solid fa-play"></i> Read Aloud';
+    return;
+  }
+  if (!('speechSynthesis' in window)) { showToast('⚠️ Speech not supported in this browser'); return; }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = 0.82; utt.pitch = 1;
+  utt.onend = () => { isReading = false; btn.innerHTML = '<i class="fa-solid fa-play"></i> Read Aloud'; };
+  window.speechSynthesis.speak(utt);
+  isReading = true;
+  btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Reading';
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(text), { rate: 0.85 }));
+}
+
+// ============================================================
+// WELLNESS — logs mood to MongoDB via /api/user/wellness
+// ============================================================
+async function logMood(mood, btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  try {
+    await api('/api/user/wellness', 'POST', { mood });
+    showToast('💛 Mood logged! Thank you for checking in.');
+  } catch {}
+}
+
+// ============================================================
+// EMAIL VERIFICATION — uses MernAuth OTP system
+// ============================================================
+async function sendVerifyOtp() {
+  try {
+    const res = await api('/api/auth/send-verify-otp', 'POST');
+    if (res.success) {
+      document.getElementById('otpOverlay').classList.add('open');
+      showToast('📩 OTP sent to your email!');
+    } else {
+      showToast('❌ ' + (res.message || 'Failed to send OTP'));
+    }
+  } catch {
+    showToast('❌ Could not send OTP. Is the backend running?');
+  }
+}
+
+async function submitOtp() {
+  const otp = document.getElementById('otpInput').value.trim();
+  if (!otp || otp.length !== 6) { showToast('⚠️ Please enter a 6-digit OTP'); return; }
+  try {
+    const res = await api('/api/auth/verify-account', 'POST', { otp });
+    if (res.success) {
+      document.getElementById('otpOverlay').classList.remove('open');
+      document.getElementById('verifyBanner').classList.remove('show');
+      if (currentUser) currentUser.isAccountverified = true;
+      showToast('✅ Email verified successfully! All features unlocked.');
+    } else {
+      showToast('❌ ' + (res.message || 'Invalid OTP'));
+    }
+  } catch {
+    showToast('❌ Verification failed. Try again.');
+  }
+}
+
+// ============================================================
+// LOGOUT — clears MernAuth httpOnly cookie via /api/auth/logout
+// ============================================================
+async function handleLogout() {
+  try { await api('/api/auth/logout', 'POST'); } catch {}
+  window.location.href = 'login.html';
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+function toggleNotif() {
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#notifPanel') && !e.target.closest('.icon-btn')) {
+    document.getElementById('notifPanel')?.classList.remove('open');
+  }
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
