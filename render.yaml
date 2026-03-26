@@ -1,0 +1,20 @@
+database:
+  plan: free
+  name: accesslearn-db
+
+services:
+  - type: web
+    name: accesslearn
+    env: node
+    region: singapore
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    healthCheckPath: /
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3000

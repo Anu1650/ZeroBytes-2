@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.style.opacity = '0.8';
             submitBtn.disabled = true;
 
-            fetch('http://localhost:5000/api/auth/login', {
+            fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: emailId, password })
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.style.opacity = '0.8';
             submitBtn.disabled = true;
 
-            fetch('http://localhost:5000/api/auth/login', {
+            fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: instId, password: secKey })

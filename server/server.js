@@ -1,4 +1,8 @@
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import cors from 'cors';
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
@@ -25,11 +29,12 @@ app.use(cors({
         'http://localhost:5500',
         'http://127.0.0.1:5500',
         'http://127.0.0.1:3000',
-        'null'
+        'null',
+        'https://your-frontend.vercel.app'
     ],
     credentials: true
 }));
-app.use(express.static('../client'));
+app.use(express.static(path.join(__dirname, '../client')));
 
 // API Routes
 app.use('/api/auth', authRouter);
@@ -223,6 +228,15 @@ app.get('/api/seed', async (req, res) => {
         res.json({ success: true, message: '\u2705 Sample data seeded! 5 lessons + 3 scholarships added.' });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Serve frontend for all non-API routes
+app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, '../client/index.html'));
+    } else {
+        res.status(404).json({ error: 'API not found' });
     }
 });
 
